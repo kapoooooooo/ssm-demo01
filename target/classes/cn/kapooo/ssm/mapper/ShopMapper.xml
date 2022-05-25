@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kapooo.ssm.mapper.ShopMapper">
+
+
+    <!--查询所有店铺信息-->
+    <resultMap id="baseResultShopSelectAll" type="cn.kapooo.ssm.domain.Shop">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sn" property="sn"/>
+        <result column="status" property="status"/>
+
+        <association property="mall" javaType="cn.kapooo.ssm.domain.Mall"
+                     column="mallId"
+                     select="cn.kapooo.ssm.mapper.MallMapper.selectById"/>
+        <association property="employee" javaType="cn.kapooo.ssm.domain.Employee"
+                     column="employeeId"
+                     select="cn.kapooo.ssm.mapper.EmployeeMapper.selectById"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="baseResultShopSelectAll">
+        select id, name, sn, status, mallId, employeeId from Shop
+    </select>
+
+    <!--保存店铺信息-->
+    <insert id="save" keyColumn="id" keyProperty="id">
+        insert into shop (name, sn, status, mallId, employeeId) values (#{name}, #{sn}, 1, #{mall.id}, #{employee.id})
+    </insert>
+
+    <!--修改店铺信息-->
+    <update id="update">
+        update shop set name = #{name}, sn = #{sn}, status = #{status}, mallId = #{mall.id}, employeeId = #{employee.id}
+        where id = #{id}
+    </update>
+
+    <!--根据id查找店铺信息-->
+    <resultMap id="baseResultShopSelectById" type="cn.kapooo.ssm.domain.Shop">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sn" property="sn"/>
+        <result column="status" property="status"/>
+
+        <association property="mall" javaType="cn.kapooo.ssm.domain.Mall"
+                     column="mallId"
+                     select="cn.kapooo.ssm.mapper.MallMapper.selectById"/>
+        <association property="employee" javaType="cn.kapooo.ssm.domain.Employee"
+                     column="employeeId"
+                     select="cn.kapooo.ssm.mapper.EmployeeMapper.selectById"/>
+    </resultMap>
+    <select id="selectById" resultMap="baseResultShopSelectById">
+        select id, name, sn, status, mallId, employeeId from Shop
+        where id = #{id}
+    </select>
+
+    <!--删除店铺信息-->
+    <delete id="delete">
+        delete from shop
+        where id = #{id}
+    </delete>
+
+    <!--查询数据总条数-->
+    <select id="selectForCount" resultType="int">
+        select count(id) from shop
+    </select>
+
+    <!--查询每个分页的数据-->
+    <resultMap id="baseResultShopSelectForList" type="cn.kapooo.ssm.domain.Shop">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sn" property="sn"/>
+        <result column="status" property="status"/>
+
+        <association property="mall" javaType="cn.kapooo.ssm.domain.Mall"
+                     column="mallId"
+                     select="cn.kapooo.ssm.mapper.MallMapper.selectById"/>
+        <association property="employee" javaType="cn.kapooo.ssm.domain.Employee"
+                     column="employeeId"
+                     select="cn.kapooo.ssm.mapper.EmployeeMapper.selectById"/>
+        <association property="goods" javaType="cn.kapooo.ssm.domain.Goods"
+                     column="id"
+                     select="getBestGoods"/>
+<!--        <association property="shopGoodsNum" javaType="java.lang.Integer"-->
+<!--                     column="id"-->
+<!--                     select="getShopGoodsNum"/>-->
+    </resultMap>
+    <select id="selectForList" resultMap="baseResultShopSelectForList">
+        select id, name, sn, status, mallId, employeeId from Shop
+<!--        limit #{start}, #{pageSize}-->
+    </select>
+
+
+
+    <!--获取推荐货物-->
+    <select id="getBestGoods" resultType="cn.kapooo.ssm.domain.Goods">
+        select id, name, sn, status, num, shopId from goods
+        where num in (select Max(num) from goods where shopId = #{id})
+        and shopId = #{id}
+        limit 0,1
+    </select>
+
+</mapper>

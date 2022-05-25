@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--编写内容-->
+<div>
+    <div>获取对象中的属性[[${departments[0].name}]]</div>
+    <hr>
+    <p>1、获取对象中的userName属性：[[${departments[0].name}]]</p>
+    <hr>
+</div>
+<div >
+    <table border="1" cellpadding="0" cellspacing="0" width="80%" align="center">
+        <thead align="center">
+        <tr >
+            <th>编号</th>
+            <th>部门名称</th>
+            <th>部门编号</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody align="center">
+            <tr th:each="department:${departments}">
+                <td th:text="${department.id}">1</td>
+                <td th:text="${department.name}">开发部</td>
+                <td th:text="${department.sn}">DEV</td>
+                <td>
+                   <a th:href="|/department/input?id=${department.id}|">编辑</a>
+                   <a th:href="|/department/delete?id=${department.id}|">删除</a>
+
+                    <a th:href="@{/department/details(id=${department.id})}">设置单个URL参数</a>
+                    <a th:href="@{/department/details(id=${department.id},name=${department.name})}">设置多个URL参数</a>
+                    <a th:href="@{/department/{userId}/(userId=${department.id})}">设置rest风格参数</a>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

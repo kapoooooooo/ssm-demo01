@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>商品管理</title>
+
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <!--fragment文件名 link是th:fragment="link"的值-->
+    <div th:replace="common/fragment::link"></div>
+    <div th:replace="common/fragment::navbar"></div>
+    <div th:replace="common/fragment::menu"></div>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>商品管理</h1>
+        </section>
+        <section class="content">
+            <div class="box">
+                <!--高级查询--->
+                <div style="margin: 10px;">
+                    <!--高级查询--->
+                    <form class="form-inline" id="searchForm" action="/goods/list" method="post">
+                        <input type="hidden" name="currentPage" id="currentPage" value="1">
+                        <div class="form-group">
+                            <label for="keyword">关键字:</label>
+                            <input type="text" class="form-control" id="keyword" name="keyword" value="" placeholder="请输入商品名称或者店铺名称">
+                        </div>
+                        <div class="form-group">
+                            <label for="minSaleNum">最低销量:</label>
+                            <input size="4" type="number" class="form-control" id="minSaleNum" name="minSaleNum" value="" placeholder="请输入最低销量">
+                        </div>
+                        <div class="form-group">
+                            <label for="maxSaleNum">最高销量:</label>
+                            <input  size="4" type="number" class="form-control" id="maxSaleNum" name="maxSaleNum" value="" placeholder="请输入最高销量">
+                        </div>
+                        <div class="form-group">
+                            <label for="status"> 商品状态:</label>
+                            <select class="form-control" id="status" name="status">
+                                <option value="-1" >全部</option>
+                                <option value="1" >上线</option>
+                                <option value="2">下线</option>
+                            </select>
+                            <!--<script>-->
+                            <!--    $("#status").val(${qo.status})-->
+                            <!--</script>-->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="shopId"> 店铺名称:</label>
+                            <select class="form-control" name="shopId" id="shopId">
+                                <option value="-1">全部</option>
+                                <option>你的店铺</option>
+                            </select>
+                        </div>
+
+                        <button id="btn_query" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> 查询</button>
+                        <a href="/goods/input" class="btn btn-success btn_redirect">
+                            <span class="glyphicon glyphicon-plus"></span> 添加
+                        </a>
+                    </form>
+
+                    <table class="table table-striped table-hover" >
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>商品名称</th>
+                            <th>商品编号</th>
+                            <th>商品销量</th>
+                            <th>所属店铺</th>
+                            <th>商品状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                       <tr th:each="goods,state:${pageInfo.list}">
+                           <td th:text="${state.index + 1}">1</td>
+                           <td th:text="${goods.name}">手机</td>
+                           <td th:text="${goods.sn}">001</td>
+                           <td th:text="${goods.num}">200</td>
+                           <td th:text="${goods.shop.id}">jd店铺</td>
+                           <td>
+                               <span th:text="${goods.status != null or goods.status == 1} ? '上线' : '下线'" >
+                                  上线/下线
+                               </span>
+                           </td>
+                           <td>
+                               <a th:href="|/goods/input?id=${goods.id}|" class="btn btn-info btn-xs btn_redirect">
+                                   <span class="glyphicon glyphicon-pencil"></span> 编辑
+                               </a>
+                               <a th:href="|/goods/delete?id=${goods.id}|" class="btn btn-danger btn-xs btn_delete" >
+                                   <span class="glyphicon glyphicon-trash"></span> 删除
+                               </a>
+                           </td>
+                       </tr>
+
+                    </table>
+                    <!--分页-->
+                    <div th:replace="common/fragment :: page"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kapooo.ssm.mapper.UserMapper">
+
+    <!--保存用户信息-->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into user (username, password) values (#{username}, #{password})
+    </insert>
+
+    <!--根据用户名查用户名-->
+    <select id="selectUsernameByUsername" resultType="cn.kapooo.ssm.domain.User">
+        select username from user
+        where username = #{username}
+    </select>
+
+    <!--根据用户名和密码查用户名-->
+    <select id="selectUsernameByUsernamePassword" resultType="cn.kapooo.ssm.domain.User">
+        select username from user
+        where username = #{username} and password = #{password}
+    </select>
+
+</mapper>

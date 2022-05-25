@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kapooo.ssm.mapper.StudentMapper">
+
+
+    <!--保存学生信息-->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into student (name, age, email) values (#{name}, #{age}, #{email})
+    </insert>
+
+    <!--保存学生和课程的关系-->
+    <insert id="saveRelation">
+        insert into course_student (student_id, course_id) values
+        <foreach collection="courseIds" item="courseId" separator=",">
+            (#{studentId}, #{courseId})
+        </foreach>
+    </insert>
+
+    <!--修改学生信息-->
+    <update id="update">
+        update student set name = #{name}, age = #{age}, email = #{email}
+        where id = #{id}
+    </update>
+
+    <!--根据学生id查询学生数据-->
+    <select id="selectByStudentId" resultType="cn.kapooo.ssm.domain.Student">
+        select id, name, age, email from student
+        where id = #{id}
+    </select>
+
+    <!--删除学生信息-->
+    <delete id="delete">
+        delete from student
+        where id = #{id}
+    </delete>
+
+    <!--根据学生id删除学生和课程的关系-->
+    <delete id="deleteRelationByStudentId">
+        delete from course_student
+        where student_id = #{id}
+    </delete>
+
+    <!--查询全部学生信息-->
+    <resultMap id="baseResultCourseList" type="cn.kapooo.ssm.domain.Student">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="age" property="age"/>
+        <result column="email" property="email"/>
+        <collection property="courseList" javaType="list"
+                    column="id" select="cn.kapooo.ssm.mapper.CourseMapper.selectCourseListByStudentId"/>
+    </resultMap>
+    <select id="selectAll" resultMap="baseResultCourseList">
+        select id, name, age, email from student
+    </select>
+
+    <!--根据课程id查询对应学生信息-->
+
+    <select id="selectAllByCourseId" resultMap="baseResultCourseList">
+        select student.id, student.name, student.age, student.email from student
+        join course_student on student.id = course_student.student_id
+        where course_student.course_id = #{id}
+    </select>
+
+    <!--根据课程id查询对应学生的数量-->
+    <select id="selectCountByCourseId" resultType="long">
+        select count(course_id) from course_student
+        where course_id = #{id}
+    </select>
+
+</mapper>

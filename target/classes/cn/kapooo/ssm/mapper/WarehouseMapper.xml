@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kapooo.ssm.mapper.WarehouseMapper">
+
+
+    <!--查询所有库存信息-->
+    <resultMap id="baseResultWareHouseSelectAll" type="cn.kapooo.ssm.domain.Warehouse">
+        <id column="id" property="id"/>
+        <result column="address" property="address"/>
+        <result column="tel" property="tel"/>
+        <result column="status" property="status"/>
+        <result column="num" property="num"/>
+
+        <association property="goods" javaType="cn.kapooo.ssm.domain.Goods"
+                     column="goodsId"
+                     select="cn.kapooo.ssm.mapper.GoodsMapper.selectById"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="baseResultWareHouseSelectAll">
+        select id, address,  tel, status, num, goodsId from warehouse
+    </select>
+
+    <!--保存库存信息-->
+    <insert id="save" keyColumn="id" keyProperty="id">
+        insert into warehouse (address, tel, num, goodsId) values (#{address}, #{tel}, #{num}, #{goods.id})
+    </insert>
+
+    <!--修改库存信息-->
+    <update id="update">
+        update warehouse set address = #{address}, tel = #{tel}, status = #{status}, num = #{num}, goodsId = #{goods.id}
+        where id = #{id}
+    </update>
+
+    <!--根据id查找库存信息-->
+    <resultMap id="baseResultWarehouseSelectById" type="cn.kapooo.ssm.domain.Warehouse">
+        <id column="id" property="id"/>
+        <result column="address" property="address"/>
+        <result column="tel" property="tel"/>
+        <result column="status" property="status"/>
+        <result column="num" property="num"/>
+
+        <association property="goods" javaType="cn.kapooo.ssm.domain.Goods"
+                     column="goodsId"
+                     select="cn.kapooo.ssm.mapper.GoodsMapper.selectById"/>
+    </resultMap>
+    <select id="selectById" resultMap="baseResultWarehouseSelectById">
+        select id, address,  tel, status, num, goodsId from warehouse
+        where id = #{id}
+    </select>
+
+    <!--删除库存信息-->
+    <delete id="delete">
+        delete from warehouse
+        where id = #{id}
+    </delete>
+
+    <!--查询数据总条数-->
+    <select id="selectForCount" resultType="int">
+        select count(id) from warehouse
+    </select>
+
+    <!--查询每个分页的数据-->
+    <resultMap id="baseResultWarehouseSelectForList" type="cn.kapooo.ssm.domain.Warehouse">
+        <id column="id" property="id"/>
+        <result column="address" property="address"/>
+        <result column="tel" property="tel"/>
+        <result column="status" property="status"/>
+        <result column="num" property="num"/>
+
+        <association property="goods" javaType="cn.kapooo.ssm.domain.Goods"
+                     column="goodsId"
+                     select="cn.kapooo.ssm.mapper.GoodsMapper.selectById"/>
+    </resultMap>
+    <select id="selectForList" resultMap="baseResultWarehouseSelectForList">
+        select id, address,  tel, status, num, goodsId from warehouse
+<!--        limit #{start}, #{pageSize}-->
+    </select>
+
+</mapper>

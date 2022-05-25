@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>员工管理</title>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div th:replace="common/fragment :: link"></div>
+    <div class="wrapper">
+        <div th:replace="common/fragment :: navbar"></div>
+        <div th:replace="common/fragment :: menu"></div>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>员工编辑</h1>
+            </section>
+            <section class="content">
+                <div class="box">
+                    <form class="form-horizontal" action="/employee/saveOrUpdate" method="post" id="editForm">
+                        <input type="hidden" name="id" th:value="${employee?.id}">
+                        <div class="form-group"  style="margin-top: 10px;">
+                            <label  class="col-sm-2 control-label">姓名：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="name" th:value="${employee?.name}" placeholder="请输入员工名称">
+                            </div>
+                        </div>
+                        <div class="form-group"  style="margin-top: 10px;">
+                            <label  class="col-sm-2 control-label">用户名：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="username" th:value="${employee?.username}" placeholder="请输入用户名">
+                            </div>
+                        </div>
+                        <div class="form-group"  style="margin-top: 10px;">
+                            <label  class="col-sm-2 control-label">密码：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="password" th:value="${employee?.password}" placeholder="请输入密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">年龄：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="age" th:value="${employee?.age}" placeholder="请输入员工年龄">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">邮箱：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="email" th:value="${employee?.email}" placeholder="请输入员工邮箱">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label  class="col-sm-2 control-label">超级管理员：</label>
+                            <div class="col-sm-6">
+                            是:<input name="admin" type="radio" data-size="small" value="1" th:checked="${employee?.admin}?'checked':'false'">
+                            否:<input name="admin" type="radio" data-size="small" value="0" th:checked="${employee?.admin}?'false':'checked'">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">部门：</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" name="department.id" style="width: 145px">
+                                    <option th:each="department:${departmentList}"
+                                            th:text="${department.name}"
+                                            th:value="${department.id}"
+                                            th:selected="${department.id} eq ${employee?.department?.id}">
+                                        开发部</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group " id="role">
+                            <label for="role" class="col-sm-2 control-label">分配角色：</label><br/>
+                            <div class="row" style="margin-top: 10px">
+                                <div class="col-sm-2 col-sm-offset-2">
+                                    <select multiple class="form-control allRoles" style="height: 350px;" size="15">
+                                        <option th:each="role:${roleList}"
+                                                th:text="${role.name}"
+                                                th:value="${role.id}">
+                                            全部的权限</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-1" style="margin-top: 60px;" align="center">
+                                    <div>
+                                        <a type="button" class="btn btn-primary" style="margin-top: 10px" title="右移动"
+                                           onclick="moveSelected('allRoles', 'selfRoles')">
+                                            <span class="glyphicon glyphicon-menu-right"></span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a type="button" class="btn btn-primary " style="margin-top: 10px" title="左移动"
+                                           onclick="moveSelected('selfRoles', 'allRoles')">
+                                            <span class="glyphicon glyphicon-menu-left"></span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a type="button" class="btn btn-primary " style="margin-top: 10px" title="全右移动"
+                                           onclick="moveAll('allRoles', 'selfRoles')">
+                                            <span class="glyphicon glyphicon-forward"></span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a type="button" class="btn btn-primary " style="margin-top: 10px" title="全左移动"
+                                           onclick="moveAll('selfRoles', 'allRoles')">
+                                            <span class="glyphicon glyphicon-backward"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select multiple class="form-control selfRoles" style="height: 350px;" size="15" name="roleIds">
+                                        <option th:each="role:${ownRoleList}"
+                                                th:text="${role.name}"
+                                                th:value="${role.id}">
+                                            拥有的权限</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-6">
+                                <button type="button" class="btn btn-primary btn-submit">保存</button>
+                                <a href="javascript:window.history.back()" class="btn btn-danger">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <!--        <div th:replace="common/fragment :: footer"></div>-->
+    </div>
+
+    <script>
+        function moveAll(srcClass, targetClass) {
+            $('.' + targetClass).append($('.' + srcClass + ' > option'));
+        }
+        function moveSelected(srcClass, targetClass) {
+            $('.' + targetClass).append($('.' + srcClass + ' > option:selected'));
+        }
+
+        $('.btn-submit').click(function () {
+            $('.selfRoles > option').prop('selected', true);
+            // 找到表单提交
+            $('#editForm').submit();
+        });
+
+        $(function () {
+            var arr = [];
+            // 获取右边下拉框中所有 option 的 value 属性值, 存到数组
+            $('.selfRoles > option').each(function (i, domEle) {
+                arr.push($(domEle).val());
+            });
+            // 遍历左边下拉框中的 option , 若 option value 在上面数组存在, 则删除对应 option
+            $('.allRoles > option').each(function (i, domEle) {
+                var $option = $(domEle);
+                var val = $option.val();
+                if($.inArray(val, arr) >= 0) { // 存在
+                    $option.remove();
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

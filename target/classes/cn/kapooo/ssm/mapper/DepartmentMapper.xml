@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kapooo.ssm.mapper.DepartmentMapper">
+
+
+    <!--查询所有部门信息-->
+    <select id="selectAll" resultType="cn.kapooo.ssm.domain.Department">
+        select id, name, sn from department
+    </select>
+
+    <!--保存部门信息-->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into department (name, sn) values (#{name}, #{sn})
+    </insert>
+
+    <!--修改部门信息-->
+    <update id="update">
+        update department set name = #{name}, sn = #{sn}
+        where id = #{id}
+    </update>
+
+    <!--根据id查找部门信息-->
+    <select id="selectById" resultType="cn.kapooo.ssm.domain.Department">
+        select id, name, sn from department
+        where id = #{id}
+    </select>
+
+    <!--删除部门信息（修改部门状态）-->
+    <delete id="delete">
+        delete from department
+        where id = #{id}
+    </delete>
+
+    <!--查询数据总条数-->
+    <select id="selectForCount" resultType="int">
+        select count(id) from department
+    </select>
+
+    <!--查询每个分页的数据-->
+    <select id="selectForList" resultType="cn.kapooo.ssm.domain.Department">
+        select id, name, sn from department
+<!--        limit #{start}, #{pageSize}-->
+    </select>
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kapooo.ssm.mapper.CourseMapper">
+
+
+    <!--保存课程信息-->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into course (name, author, score) values (#{name}, #{author}, #{score})
+    </insert>
+
+    <!--修改课程信息-->
+    <update id="update">
+        update course set name = #{name}, author = #{author} , score = #{score}
+        where id = #{id}
+    </update>
+
+    <!--根据课程id查询课程数据-->
+    <select id="selectByCourseId" resultType="cn.kapooo.ssm.domain.Course">
+        select id, name, author, score from course
+        where id = #{id}
+    </select>
+
+    <!--删除课程信息-->
+    <delete id="delete">
+        delete from course
+        where id = #{id}
+    </delete>
+
+    <!--根据课程id删除学生和课程的关系-->
+    <delete id="deleteRelationByCourseId">
+        delete from course_student
+        where course_id = #{id}
+    </delete>
+
+    <!--查询全部课程信息-->
+    <resultMap id="baseResultStudentNum" type="cn.kapooo.ssm.domain.Course">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="author" property="author"/>
+        <result column="score" property="score"/>
+         <association property="studentNum" javaType="java.lang.Long"
+                        column="id" select="cn.kapooo.ssm.mapper.StudentMapper.selectCountByCourseId"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="baseResultStudentNum">
+        select id, name, author, score from course
+    </select>
+
+    <!--根据学生id查询对应课程信息-->
+    <select id="selectAllByStudentId" resultType="cn.kapooo.ssm.domain.Course">
+        select course.id, course.name, course.author, course.score from course
+        join course_student on course.id = course_student.course_id
+        where course_student.student_id = #{id}
+    </select>
+
+    <!--根据学生id查询成绩前三的课程排名-->
+    <select id="selectCourseListByStudentId" resultType="cn.kapooo.ssm.domain.Course">
+        select * from course
+	    where course.id in (select course_id from course_student where student_id = #{id})
+	    order by course.score desc LIMIT 0,3
+    </select>
+</mapper>

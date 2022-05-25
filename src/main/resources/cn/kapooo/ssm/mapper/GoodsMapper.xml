@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kapooo.ssm.mapper.GoodsMapper">
+
+
+    <!--查询所有货物信息-->
+    <resultMap id="baseResultGoodsSelectAll" type="cn.kapooo.ssm.domain.Goods">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sn" property="sn"/>
+        <result column="status" property="status"/>
+        <result column="num" property="num"/>
+
+        <association property="shop" javaType="cn.kapooo.ssm.domain.Shop"
+                     column="shopId"
+                     select="cn.kapooo.ssm.mapper.ShopMapper.selectById"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="baseResultGoodsSelectAll">
+        select id, name, sn, status, num ,shopId from goods
+    </select>
+
+    <!--保存货物信息-->
+    <insert id="save" keyColumn="id" keyProperty="id">
+        insert into goods (name, sn, status, num, shopId) values (#{name}, #{sn}, 1, #{num}, #{shop.id})
+    </insert>
+
+    <!--修改货物信息-->
+    <update id="update">
+        update goods set name = #{name}, sn = #{sn}, status = #{status}, num = #{num}, shopId = #{shop.id}
+        where id = #{id}
+    </update>
+
+    <!--根据id查找货物信息-->
+    <resultMap id="baseResultGoodsSelectById" type="cn.kapooo.ssm.domain.Goods">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sn" property="sn"/>
+        <result column="status" property="status"/>
+        <result column="num" property="num"/>
+
+        <association property="shop" javaType="cn.kapooo.ssm.domain.Shop"
+                     column="shopId"
+                     select="cn.kapooo.ssm.mapper.ShopMapper.selectById"/>
+    </resultMap>
+    <select id="selectById" resultMap="baseResultGoodsSelectById">
+        select id, name, sn, status, num ,shopId from goods
+        where id = #{id}
+    </select>
+
+    <!--删除货物信息-->
+    <delete id="delete">
+        delete from goods
+        where id = #{id}
+    </delete>
+
+    <!--查询数据总条数-->
+    <select id="selectForCount" resultType="int">
+        select count(id) from goods
+    </select>
+
+    <!--查询每个分页的数据-->
+    <resultMap id="baseResultGoodsSelectForList" type="cn.kapooo.ssm.domain.Goods">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sn" property="sn"/>
+        <result column="status" property="status"/>
+        <result column="num" property="num"/>
+
+        <association property="shop" javaType="cn.kapooo.ssm.domain.Shop"
+                     column="shopId"
+                     select="cn.kapooo.ssm.mapper.ShopMapper.selectById"/>
+    </resultMap>
+    <select id="selectForList" resultMap="baseResultGoodsSelectForList">
+        select id, name, sn, status, num ,shopId from goods
+<!--        limit #{start}, #{pageSize}-->
+    </select>
+
+    <!--根据商店的id获取对应货物的数量-->
+    <select id="getGoodsNum" resultType="integer">
+        select count(id) from goods where shopId = #{id}
+    </select>
+
+</mapper>

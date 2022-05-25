@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kapooo.ssm.mapper.PermissionMapper">
+
+    <!--查询每个分页的数据-->
+    <select id="selectForList" resultType="cn.kapooo.ssm.domain.Permission">
+        select id, name, expression from permission
+    </select>
+
+    <!--查询全部权限-->
+    <select id="selectAll" resultType="cn.kapooo.ssm.domain.Permission">
+        select id, name, expression from permission
+    </select>
+
+    <!--根据角色id查询角色拥有的权限-->
+    <select id="selectAllByRoleId" resultType="cn.kapooo.ssm.domain.Permission">
+        select permission.id, permission.name from role
+        join role_permission on role.id = role_permission.role_id
+        join permission on role_permission.permission_id = permission.id
+        where role.id = #{roleId}
+    </select>
+
+    <!--保存权限-->
+    <select id="save">
+        insert into permission(name, expression) values
+        <foreach collection="permissionList" item="permission" separator=",">
+            (#{permission.name}, #{permission.expression})
+        </foreach>
+    </select>
+
+    <!--根据权限名称和表达式查权限-->
+    <select id="selectByNameExpression" resultType="boolean">
+        select count(id) from permission
+        where name = #{name} and expression = #{expression}
+    </select>
+
+    <!--查询全部权限表达式-->
+    <select id="selectAllExpression" resultType="string">
+        select expression from permission
+    </select>
+
+    <!--根据员工id查询员工拥有的权限-->
+    <select id="selectExpressionByEmployeeId" resultType="string">
+    select permission.expression from permission
+    join role_permission on role_permission.permission_id = permission.id
+    join employee_role on role_permission.role_id = employee_role.role_id
+    where employee_role.employee_id = #{id}
+    </select>
+</mapper>

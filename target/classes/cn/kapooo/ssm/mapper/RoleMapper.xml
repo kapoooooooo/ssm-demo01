@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.kapooo.ssm.mapper.RoleMapper">
+
+
+    <!--查询所有角色信息-->
+    <select id="selectAll" resultType="cn.kapooo.ssm.domain.Role">
+        select id, name, sn from role
+    </select>
+
+    <!--根据员工id查询员工拥有的角色-->
+    <select id="selectAllByEmployeeId" resultType="cn.kapooo.ssm.domain.Role">
+        select role.id, role.name from employee
+        join employee_role on employee.id = employee_role.employee_id
+        join role on employee_role.role_id = role.id
+        where employee.id = #{employeeId}
+    </select>
+
+    <!--保存角色信息-->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into role (name, sn) values (#{name}, #{sn})
+    </insert>
+
+    <!--保存角色和权限关系-->
+    <insert id="saveRelation">
+        insert into role_permission (role_id, permission_id) values
+        <foreach collection="permissionIds" item="permissionId" separator=",">
+            (#{roleId}, #{permissionId})
+        </foreach>
+    </insert>
+
+
+    <!--修改角色信息-->
+    <update id="update">
+        update role set name = #{name}, sn = #{sn}
+        where id = #{id}
+    </update>
+
+    <!--根据id查找角色信息-->
+    <select id="selectById" resultType="cn.kapooo.ssm.domain.Role">
+        select id, name, sn from role
+        where id = #{id}
+    </select>
+
+    <!--删除角色信息-->
+    <delete id="delete">
+        delete from role
+        where id = #{id}
+    </delete>
+
+    <!--根据id删除角色与全部权限的关系-->
+    <delete id="deleteByRoleId">
+        delete from role_permission
+        where role_id = #{id}
+    </delete>
+
+    <!--查询数据总条数-->
+    <select id="selectForCount" resultType="int">
+        select count(id) from role
+    </select>
+
+    <!--查询每个分页的数据-->
+    <select id="selectForList" resultType="cn.kapooo.ssm.domain.Role">
+        select id, name, sn from role
+        <!--        limit #{start}, #{pageSize}-->
+    </select>
+</mapper>

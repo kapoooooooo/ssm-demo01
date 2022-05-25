@@ -1,0 +1,65 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>商城管理</title>
+
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div th:replace="common/fragment :: link"></div>
+<div class="wrapper">
+    <div th:replace="common/fragment :: navbar"></div>
+    <div th:replace="common/fragment :: menu"></div>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>库存管理</h1>
+        </section>
+        <section class="content">
+            <div class="box">
+                <!--高级查询--->
+                <div style="margin: 10px;">
+                    <!--高级查询--->
+                    <form class="form-inline" id="searchForm" action="/warehouse/list" method="post">
+                        <input type="hidden" name="currentPage" id="currentPage" value="1">
+                        <a href="/warehouse/input" class="btn btn-success btn_redirect"><span class="glyphicon glyphicon-plus"></span> 添加</a>
+                    </form>
+
+                    <table class="table table-striped table-hover" >
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>地址</th>
+                            <th>电话</th>
+                            <th>商品</th>
+                            <th>数量</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                           <tr th:each="warehouse,state:${pageInfo.list}">
+                               <td th:text="${state.count}">1</td>
+                               <td th:text="${warehouse.address}">绵阳</td>
+                               <td th:text="${warehouse.tel}">130123456</td>
+                               <th th:text="${warehouse.goods.name}">${warehouse.goods.name}</th>
+                               <th th:text="${warehouse.num}">100</th>
+
+                               <td>
+                                   <a th:href="|/warehouse/input?id=${warehouse.id}|" class="btn btn-info btn-xs btn_redirect">
+                                       <span class="glyphicon glyphicon-pencil"></span> 编辑
+                                   </a>
+                                   <a th:href="|/warehouse/delete?id=${warehouse.id}|" class="btn btn-danger btn-xs btn_delete" >
+                                       <span class="glyphicon glyphicon-trash"></span> 删除
+                                   </a>
+                               </td>
+                           </tr>
+                    </table>
+                    <!--分页-->
+                    <div th:replace="common/fragment :: page"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
